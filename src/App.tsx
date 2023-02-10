@@ -8,6 +8,13 @@ enum Mask {
     Question
 }
 
+const mapMaskToView: Record<Mask, React.ReactNode> = {
+    [Mask.Transparent]:'',
+    [Mask.Fill]:'',
+    [Mask.Flag]:'',
+    [Mask.Question]:''
+};
+
 function App() {
 
     const size = 10;
