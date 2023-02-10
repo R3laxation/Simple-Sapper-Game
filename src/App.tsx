@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ReactNode, useState} from 'react';
 import {createField, Mine} from "./helpers/createField/createField";
 
 enum Mask {
@@ -8,11 +8,14 @@ enum Mask {
     Question
 }
 
-const mapMaskToView: Record<Mask, React.ReactNode> = {
-    [Mask.Transparent]:'',
-    [Mask.Fill]:'',
-    [Mask.Flag]:'',
-    [Mask.Question]:''
+const leaf = ":leaf"
+
+
+const mapMaskToView: Record<Mask, ReactNode> = {
+    [Mask.Transparent]: null,
+    [Mask.Fill]: '🌿',
+    [Mask.Flag]: '⛳',
+    [Mask.Question]: '❓'
 };
 
 function App() {
@@ -20,8 +23,7 @@ function App() {
     const size = 10;
     const dimension = new Array(size).fill(null);
     const [field, setField] = useState<number[]>(() => createField(size));
-    const [mask, setMask] = useState<number[]>(() => new Array(size * size).fill(Mask.Fill));
-
+    const [mask, setMask] = useState<Mask[]>(() => new Array(size * size).fill(Mask.Fill));
 
     return (
         <div>
@@ -38,12 +40,50 @@ function App() {
                                     height: 24,
                                     margin: 1,
                                     backgroundColor: '#BEB'
-                                }}>
+                                }} onClick={() => {
+                                    if (mask[y * size + x] === Mask.Transparent) return;
+
+                                    const clearing: [number, number][] = [];
+
+                                    function clear(x: number, y: number) {
+                                        if (x >= 0 && x < size && y >= 0 && y < size) {
+                                            if(mask[y * size + x] === Mask.Transparent) return;
+                                            clearing.push([x, y])
+                                        }
+                                    }
+
+                                    clear(x, y);
+
+                                    while (clearing.length) {
+                                        const [x, y] = clearing.pop()!!;
+                                        mask[y * size + x] = Mask.Transparent;
+                                        if (field[y * size + x] !== 0) continue;
+                                        clear(x + 1, y);
+                                        clear(x - 1, y);
+                                        clear(x, y + 1);
+                                        clear(x - 1, y - 1);
+                                    }
+                                    setMask((prev) => [...prev]);
+                                }}
+                                onContextMenu={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (mask[y * size + x] === Mask.Transparent) return;
+                                    if (mask[y * size + x] === Mask.Fill) {
+                                        mask[y * size + x] = Mask.Flag;
+                                    } else if (mask[y * size + x] === Mask.Flag){
+                                        mask[y * size + x] = Mask.Question;
+                                    } else if(mask[y * size + x] === Mask.Question){
+                                        mask[y * size + x] = Mask.Fill;
+                                    }
+                                    setMask((prev) => [...prev]);
+                                }}
+                                >
                                     {
                                         mask[y * size + x] !== Mask.Transparent
-                                            ? mask
+                                            ? <span>{mapMaskToView[mask[y * size + x]]}</span>
                                             : field[y * size + x] === Mine
-                                                ? <span>&#128163;</span>
+                                                ? <span>💣</span>
                                                 : field[y * size + x]
                                     }
 
