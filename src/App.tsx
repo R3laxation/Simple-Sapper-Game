@@ -25,8 +25,11 @@ function App() {
     const [field, setField] = useState<number[]>(() => createField(size));
     const [mask, setMask] = useState<Mask[]>(() => new Array(size * size).fill(Mask.Fill));
     const [death, setDeath] = useState(false);
-    const win = React.useMemo(() => field.every(
-            (f, i) => f === Mine && mask[i] === Mask.Flag || mask[i] === Mask.Transparent),
+    const win = React.useMemo(() => !field.some(
+            (f, i) =>
+                f === Mine && mask[i] !== Mask.Flag
+                || mask[i] == Mask.Transparent
+        ),
         [field, mask]);
 
     return (
