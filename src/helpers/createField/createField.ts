@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Mine = -1;
+export const Mine = -1;
 
 export const createField = (size: number): number[] => {
 
