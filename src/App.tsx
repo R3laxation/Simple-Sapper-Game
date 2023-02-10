@@ -25,6 +25,9 @@ function App() {
     const [field, setField] = useState<number[]>(() => createField(size));
     const [mask, setMask] = useState<Mask[]>(() => new Array(size * size).fill(Mask.Fill));
     const [death, setDeath] = useState(false);
+    const win = React.useMemo(() => field.every(
+            (f, i) => f === Mine && mask[i] === Mask.Flag || mask[i] === Mask.Transparent),
+        [field, mask]);
 
     return (
         <div>
@@ -40,7 +43,7 @@ function App() {
                                     width: 24,
                                     height: 24,
                                     margin: 1,
-                                    backgroundColor: death ? '#FAA' : '#BEB'
+                                    backgroundColor: death ? '#FAA' : win ? '#FFB' : '#BEB'
                                 }} onClick={() => {
                                     if (mask[y * size + x] === Mask.Transparent) return;
 
