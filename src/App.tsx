@@ -40,7 +40,7 @@ function App() {
                                     width: 24,
                                     height: 24,
                                     margin: 1,
-                                    backgroundColor: '#BEB'
+                                    backgroundColor: death ? '#FAA' : '#BEB'
                                 }} onClick={() => {
                                     if (mask[y * size + x] === Mask.Transparent) return;
 
@@ -48,7 +48,7 @@ function App() {
 
                                     function clear(x: number, y: number) {
                                         if (x >= 0 && x < size && y >= 0 && y < size) {
-                                            if(mask[y * size + x] === Mask.Transparent) return;
+                                            if (mask[y * size + x] === Mask.Transparent) return;
                                             clearing.push([x, y])
                                         }
                                     }
@@ -64,25 +64,25 @@ function App() {
                                         clear(x, y + 1);
                                         clear(x - 1, y - 1);
                                     }
-                                    if(field[y*size+x] === Mine){
-                                        mask.forEach((_, i)=> mask[i] = Mask.Transparent);
-                                    }
-                                    setMask((prev) => [...prev]);
-                                    setDeath(true);
-                                }}
-                                onContextMenu={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (mask[y * size + x] === Mask.Transparent) return;
-                                    if (mask[y * size + x] === Mask.Fill) {
-                                        mask[y * size + x] = Mask.Flag;
-                                    } else if (mask[y * size + x] === Mask.Flag){
-                                        mask[y * size + x] = Mask.Question;
-                                    } else if(mask[y * size + x] === Mask.Question){
-                                        mask[y * size + x] = Mask.Fill;
+                                    if (field[y * size + x] === Mine) {
+                                        mask.forEach((_, i) => mask[i] = Mask.Transparent);
+                                        setDeath(true);
                                     }
                                     setMask((prev) => [...prev]);
                                 }}
+                                     onContextMenu={(e) => {
+                                         e.preventDefault();
+                                         e.stopPropagation();
+                                         if (mask[y * size + x] === Mask.Transparent) return;
+                                         if (mask[y * size + x] === Mask.Fill) {
+                                             mask[y * size + x] = Mask.Flag;
+                                         } else if (mask[y * size + x] === Mask.Flag) {
+                                             mask[y * size + x] = Mask.Question;
+                                         } else if (mask[y * size + x] === Mask.Question) {
+                                             mask[y * size + x] = Mask.Fill;
+                                         }
+                                         setMask((prev) => [...prev]);
+                                     }}
                                 >
                                     {
                                         mask[y * size + x] !== Mask.Transparent
