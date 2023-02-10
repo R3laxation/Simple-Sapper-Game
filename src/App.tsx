@@ -48,6 +48,9 @@ function App() {
                                     margin: 1,
                                     backgroundColor: death ? '#FAA' : win ? '#FFB' : '#BEB'
                                 }} onClick={() => {
+
+                                    if(win || death) return;
+
                                     if (mask[y * size + x] === Mask.Transparent) return;
 
                                     const clearing: [number, number][] = [];
@@ -79,6 +82,9 @@ function App() {
                                      onContextMenu={(e) => {
                                          e.preventDefault();
                                          e.stopPropagation();
+
+                                         if(win || death) return;
+
                                          if (mask[y * size + x] === Mask.Transparent) return;
                                          if (mask[y * size + x] === Mask.Fill) {
                                              mask[y * size + x] = Mask.Flag;
