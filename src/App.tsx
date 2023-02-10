@@ -24,6 +24,7 @@ function App() {
     const dimension = new Array(size).fill(null);
     const [field, setField] = useState<number[]>(() => createField(size));
     const [mask, setMask] = useState<Mask[]>(() => new Array(size * size).fill(Mask.Fill));
+    const [die, setDie] = useState(false);
 
     return (
         <div>
@@ -62,6 +63,9 @@ function App() {
                                         clear(x - 1, y);
                                         clear(x, y + 1);
                                         clear(x - 1, y - 1);
+                                    }
+                                    if(field[y*size+x] === Mine){
+                                        mask.forEach((_, i)=> mask[i] = Mask.Transparent);
                                     }
                                     setMask((prev) => [...prev]);
                                 }}
